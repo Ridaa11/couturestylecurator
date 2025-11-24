@@ -1,0 +1,566 @@
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fashion Outfit Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2a0c1b 0%, #240e1d 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgb(61, 30, 56);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(201, 235, 88, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #210e18 0%, #3d1f33 100%);
+            color: rgb(161, 161, 87);
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .input-section {
+            background: #3e283f;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #40541f;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #321732;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #614051;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #614051 0%, #3d1f33 100%);
+            color: rgb(42, 54, 33);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #614051;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results {
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .weather-card {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: rgb(36, 51, 27);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .weather-info h3 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .weather-temp {
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .outfits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .outfit-card {
+            background: rgb(38, 54, 29);
+            border: 2px solid #23321c;
+            border-radius: 15px;
+            padding: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .outfit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .outfit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .outfit-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .occasion-badge {
+            background: #614051;
+            color: rgb(39, 52, 24);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .outfit-items {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .outfit-items li {
+            padding: 10px;
+            margin: 8px 0;
+            background: #3d4728;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .outfit-items li::before {
+            content: "👕";
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .color-palette {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #ac8585;
+        }
+
+        .color-swatch {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid rgb(167, 149, 149);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .tips-section {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+
+        .tips-section h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .tips-section ul {
+            margin-left: 20px;
+            color: #856404;
+        }
+
+        .error {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .weather-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Couture
+curator Couture Style Curator</h1>
+            <p>Get outfit suggestions based on weather and occasion</p>
+        </div>
+
+        <div class="content">
+            <div class="input-section">
+                <h2 style="margin-bottom: 20px;">Tell us your plans</h2>
+                
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city" placeholder="e.g., London, Paris">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="occasion">Occasion</label>
+                        <select id="occasion">
+                            <option value="casual">Casual</option>
+                            <option value="work">Work</option>
+                            <option value="formal">Formal</option>
+                            <option value="party">Party</option>
+                            <option value="sports">Sports</option>
+                            <option value="date">Date</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="gender">Style</label>
+                        <select id="gender">
+                            <option value="unisex">Unisex</option>
+                            <option value="masculine">Masculine</option>
+                            <option value="feminine">Feminine</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="budget">Budget</label>
+                        <select id="budget">
+                            <option value="low">Budget</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">Premium</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="getOutfits()">Generate Outfits</button>
+            </div>
+
+            <div class="error" id="error"></div>
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Loading...</p>
+            </div>
+            <div class="results" id="results"></div>
+        </div>
+    </div>
+
+    <script>
+const API_KEY = "0a2ab82240ffcaf493c6444a0aeae562";
+const API_URL = "https://api.openweathermap.org/data/2.5/weather"
+;
+
+
+        async function getOutfits() {
+            const city = document.getElementById('city').value.trim();
+            const occasion = document.getElementById('occasion').value;
+            const gender = document.getElementById('gender').value;
+            const budget = document.getElementById('budget').value;
+
+            if (!city) {
+                showError('Please enter a city');
+                return;
+            }
+
+            showLoading(true);
+            hideError();
+            hideResults();
+
+            try {
+                const weather = await fetchWeather(city);
+                const outfits = buildOutfits(weather, occasion, gender, budget);
+                showResults(weather, outfits, occasion);
+            } catch (err) {
+                showError('Could not get weather data. Check city name.');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function fetchWeather(city) {
+            const url = `${API_URL}?q=${city}&appid=${API_KEY}&units=metric`;
+            const res = await fetch(url);
+            
+            if (!res.ok) throw new Error('City not found');
+            
+            return await res.json();
+        }
+
+        function buildOutfits(weather, occasion, gender, budget) {
+            const temp = weather.main.temp;
+            const condition = weather.weather[0].main.toLowerCase();
+            const outfits = [];
+
+            // cold weather
+            if (temp < 10) {
+                outfits.push({
+                    title: 'Warm Layers',
+                    occasion: occasion,
+                    items: [
+                        'Winter coat',
+                        'Warm sweater',
+                        'Long pants',
+                        'Boots',
+                        'Scarf and gloves'
+                    ],
+                    colors: ['#2C3E50', '#34495E', '#7F8C8D'],
+                    tips: ['Layer up', 'Waterproof outer layer', 'Thermal underwear helps']
+                });
+            } 
+            // mild weather
+            else if (temp < 20) {
+                outfits.push({
+                    title: 'Light Layers',
+                    occasion: occasion,
+                    items: [
+                        'Light jacket',
+                        'Long sleeve shirt',
+                        'Jeans or chinos',
+                        'Sneakers',
+                        'Optional scarf'
+                    ],
+                    colors: ['#3498DB', '#2980B9', '#ECF0F1'],
+                    tips: ['Easy to adjust', 'Good for day to night']
+                });
+            } 
+            // warm weather
+            else {
+                outfits.push({
+                    title: 'Summer Style',
+                    occasion: occasion,
+                    items: [
+                        'T-shirt',
+                        'Shorts',
+                        'Sandals',
+                        'Sunglasses',
+                        'Hat'
+                    ],
+                    colors: ['#F39C12', '#E74C3C', '#ECF0F1'],
+                    tips: ['Stay cool', 'Breathable fabrics', 'Sunscreen']
+                });
+            }
+
+            // occasion-specific
+            if (occasion === 'formal') {
+                outfits.push({
+                    title: 'Formal',
+                    occasion: occasion,
+                    items: ['Suit or dress', 'Dress shirt', 'Dress shoes', 'Tie or jewelry', 'Watch'],
+                    colors: ['#1C1C1C', '#FFFFFF', '#C0C0C0'],
+                    tips: ['Classic style', 'Proper fit matters']
+                });
+            } else if (occasion === 'party') {
+                outfits.push({
+                    title: 'Party Look',
+                    occasion: occasion,
+                    items: ['Statement piece', 'Trendy top', 'Stylish bottoms', 'Heels or dress shoes', 'Accessories'],
+                    colors: ['#8E44AD', '#E74C3C', '#F39C12'],
+                    tips: ['Bold colors work', 'Have fun with it']
+                });
+            } else if (occasion === 'sports') {
+                outfits.push({
+                    title: 'Active',
+                    occasion: occasion,
+                    items: ['Athletic shirt', 'Shorts or leggings', 'Running shoes', 'Sports socks', 'Water bottle'],
+                    colors: ['#2ECC71', '#3498DB', '#34495E'],
+                    tips: ['Breathable fabrics', 'Comfort first']
+                });
+            }
+
+            // rainy conditions
+            if (condition.includes('rain')) {
+                outfits.push({
+                    title: 'Rain Ready',
+                    occasion: occasion,
+                    items: ['Raincoat', 'Quick-dry clothes', 'Water-resistant shoes', 'Umbrella', 'Waterproof bag'],
+                    colors: ['#2C3E50', '#3498DB', '#95A5A6'],
+                    tips: ['Stay dry', 'Dark colors hide spots']
+                });
+            }
+
+            return outfits;
+        }
+
+        function showResults(weather, outfits, occasion) {
+            const resultsDiv = document.getElementById('results');
+            
+            let html = `
+                <div class="weather-card">
+                    <div class="weather-info">
+                        <h3>${weather.name}, ${weather.sys.country}</h3>
+                        <p>${weather.weather[0].description}</p>
+                    </div>
+                    <div>
+                        <div class="weather-temp">${Math.round(weather.main.temp)}°C</div>
+                        <p>Feels like ${Math.round(weather.main.feels_like)}°C</p>
+                    </div>
+                </div>
+                <div class="outfits-grid">
+            `;
+
+            outfits.forEach(outfit => {
+                html += `
+                    <div class="outfit-card">
+                        <div class="outfit-header">
+                            <div class="outfit-title">${outfit.title}</div>
+                            <div class="occasion-badge">${outfit.occasion}</div>
+                        </div>
+                        <ul class="outfit-items">
+                            ${outfit.items.map(item => `<li>${item}</li>`).join('')}
+                        </ul>
+                        <div class="color-palette">
+                            <strong>Colors:</strong>
+                            ${outfit.colors.map(color => `<div class="color-swatch" style="background: ${color}"></div>`).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>
+                <div class="tips-section">
+                    <h3>Tips for ${occasion}</h3>
+                    <ul>
+                        ${outfits[0].tips.map(tip => `<li>${tip}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+
+            resultsDiv.innerHTML = html;
+            resultsDiv.classList.add('show');
+        }
+
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            loading.classList.toggle('show', show);
+        }
+
+        function showError(msg) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = msg;
+            errorDiv.classList.add('show');
+        }
+
+        function hideError() {
+            document.getElementById('error').classList.remove('show');
+        }
+
+        function hideResults() {
+            document.getElementById('results').classList.remove('show');
+        }
+    </script>
+</body>
+</html>
