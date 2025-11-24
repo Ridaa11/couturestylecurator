@@ -1,25 +1,10 @@
-# Couture Style Curator
+ Couture Style Curator
 
-A simple web app that suggests outfits based on weather and occasion.
+this is an application that generates outfit suggestions to the user according to the weather and occasion
+It uses realtime weather data with the help of APIs
 
-## What It Does
+API URL : "https://api.openweathermap.org/data/2.5/weather"
 
-Helps you decide what to wear by checking the weather in your city and giving you outfit ideas for different occasions.
-
-## Features
-
-- Gets real-time weather data
-- Suggests outfits for different occasions (casual, work, formal, party, sports, date)
-- Shows color combinations
-- Works on phone and computer
-- Simple and easy to use
-
-## APIs Used
-
-**OpenWeatherMap API**
-- Gets weather data for any city
-- Free to use
-- Link: https://openweathermap.org/api
 
 ## How to Run Locally
 
@@ -177,39 +162,8 @@ The browser was blocking my API requests at first. Fixed it by using the correct
 ### Load Balancer Setup
 Getting the load balancer to distribute traffic evenly took some tweaking. Had to make sure the upstream config was right and both servers were actually responding.
 
-## What Could Be Better
 
-- Save favorite outfits
-- User accounts
-- More outfit options
-- Shopping links
-- Weather for next few days
-
-## Credits
-
-- OpenWeatherMap for the weather data
-- My professor for the assignment idea
-- Stack Overflow for debugging help
-
-## Files
-
-```
-fashion-outfit-generator/
-├── index.html          # The main app file
-├── README.md          # This file
-└── .gitignore         # Stuff to ignore
-```
 
 ## Demo Video
 
-[YouTube link here]
-
-## Notes
-
-- Don't put your API key on GitHub
-- The free API tier limits you to 60 calls per minute
-- Make sure nginx is running on your servers
-
----
-
-Made for my web development class assignment.
+https://youtu.be/r8Bn7cWd8W8
