@@ -6,12 +6,8 @@ It uses realtime weather data with the help of APIs
 API URL : "https://api.openweathermap.org/data/2.5/weather"
 
 
-## How to Run Locally
+## To Run Locally,you need a web browser,Internet,and OpenWeatherMap API key (free)
 
-### What You Need
-- Web browser
-- Internet connection
-- OpenWeatherMap API key (free)
 
 ### Setup
 
@@ -167,3 +163,4 @@ Getting the load balancer to distribute traffic evenly took some tweaking. Had t
 ## Demo Video
 
 https://youtu.be/r8Bn7cWd8W8
+
